@@ -1,5 +1,11 @@
+import Pomodoro from "./components/Pomodoro/Pomodoro";
+
 function App() {
-  return <div></div>;
+  return (
+    <div>
+      <Pomodoro />
+    </div>
+  );
 }
 
 export default App;
