@@ -3,6 +3,7 @@ import styles from "./Pomodoro.module.css";
 import pauseIcon from "../../Images/pause.svg";
 import playIcon from "../../Images/play.svg";
 import resestIcon from "../../Images/reset.svg";
+import useTuneButton from "../reducer/pomodoro.reducer";
 
 function Pomodoro() {
   const [sessionDuration, setSessionDuration] = useState(1500);
@@ -10,6 +11,15 @@ function Pomodoro() {
   const [breakDuration, setBreakDuration] = useState(300);
   const [breakTimer, setBreakTimer] = useState(300);
   const [isRunning, setIsRunning] = useState(false);
+
+  const [duration, dispatchDuration] = useTuneButton({
+    sessionDuration,
+    setSessionDuration,
+    setSessionTimer,
+    breakDuration,
+    setBreakDuration,
+    setBreakTimer,
+  });
 
   const playPause = () => {
     setIsRunning(!isRunning);
@@ -34,41 +44,6 @@ function Pomodoro() {
         } else {
           setSessionTimer(sessionDuration);
           setBreakTimer(breakDuration);
-        }
-        break;
-      default: {
-      }
-    }
-  }
-
-  // Reducer handling session and break duration buttons
-  const [duration, dispatchDuration] = useReducer(durationActions);
-  function durationActions(state, action) {
-    switch (action.type) {
-      case "INCREMENT":
-        if (action.payload === "session") {
-          setSessionDuration(
-            (prevSessionDuration) => prevSessionDuration + 300
-          );
-          setSessionTimer((prevSessionTimer) => prevSessionTimer + 300);
-        } else {
-          setBreakDuration((prevBreakDuration) => prevBreakDuration + 60);
-          setBreakTimer((prevBreakTimer) => prevBreakTimer + 60);
-        }
-        break;
-      case "DECREMENT":
-        if (action.payload === "session") {
-          if (sessionDuration > 300) {
-            setSessionDuration(
-              (prevSessionDuration) => prevSessionDuration - 300
-            );
-            setSessionTimer((prevSessionTimer) => prevSessionTimer - 300);
-          }
-        } else {
-          if (breakDuration > 60) {
-            setBreakDuration((prevBreakDuration) => prevBreakDuration - 60);
-            setBreakTimer((prevBreakTimer) => prevBreakTimer - 60);
-          }
         }
         break;
       default: {
