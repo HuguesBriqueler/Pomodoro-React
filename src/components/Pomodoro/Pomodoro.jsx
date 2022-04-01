@@ -14,8 +14,17 @@ function Pomodoro() {
   const playPause = () => {
     setIsRunning(!isRunning);
   };
-  const [state, dispatch] = useReducer(reducer);
-  function reducer(state, action) {
+  const handleReset = () => {
+    if (isRunning) {
+      setIsRunning(false);
+    }
+    setSessionTimer(sessionDuration);
+    setBreakTimer(breakDuration);
+  };
+
+  // Reducer handling countdown timer
+  const [countdown, dispatchCountdown] = useReducer(countdownActions);
+  function countdownActions(state, action) {
     switch (action.type) {
       case "TICK":
         if (sessionTimer > 0) {
@@ -32,27 +41,91 @@ function Pomodoro() {
     }
   }
 
+  // Reducer handling session and break duration buttons
+  const [duration, dispatchDuration] = useReducer(durationActions);
+  function durationActions(state, action) {
+    switch (action.type) {
+      case "INCREMENT":
+        if (action.payload === "session") {
+          setSessionDuration(
+            (prevSessionDuration) => prevSessionDuration + 300
+          );
+          setSessionTimer((prevSessionTimer) => prevSessionTimer + 300);
+        } else {
+          setBreakDuration((prevBreakDuration) => prevBreakDuration + 60);
+          setBreakTimer((prevBreakTimer) => prevBreakTimer + 60);
+        }
+        break;
+      case "DECREMENT":
+        if (action.payload === "session") {
+          if (sessionDuration > 300) {
+            setSessionDuration(
+              (prevSessionDuration) => prevSessionDuration - 300
+            );
+            setSessionTimer((prevSessionTimer) => prevSessionTimer - 300);
+          }
+        } else {
+          if (breakDuration > 60) {
+            setBreakDuration((prevBreakDuration) => prevBreakDuration - 60);
+            setBreakTimer((prevBreakTimer) => prevBreakTimer - 60);
+          }
+        }
+        break;
+      default: {
+      }
+    }
+  }
+
   useEffect(() => {
     if (isRunning) {
       const interval = setInterval(() => {
-        dispatch({ type: "TICK" });
+        dispatchCountdown({ type: "TICK" });
       }, 1000);
+
       return () => clearInterval(interval);
     }
   }, [isRunning]);
 
   return (
-    <div className={styles.containerChrono}>
+    <div
+      className={`${styles.containerChrono} ${
+        isRunning ? `${styles.animGlow}` : null
+      }`}
+    >
       <div className={styles.containerConfig}>
         <div className={`sessionDuration ${styles.boxBtns}`}>
-          <button>-</button>
+          <button
+            onClick={() =>
+              dispatchDuration({ type: "DECREMENT", payload: "session" })
+            }
+          >
+            -
+          </button>
           <span>{sessionDuration / 60}</span>
-          <button>+</button>
+          <button
+            onClick={() =>
+              dispatchDuration({ type: "INCREMENT", payload: "session" })
+            }
+          >
+            +
+          </button>
         </div>
         <div className={`breakDuration ${styles.boxBtns}`}>
-          <button>-</button>
+          <button
+            onClick={() =>
+              dispatchDuration({ type: "DECREMENT", payload: "break" })
+            }
+          >
+            -
+          </button>
           <span>{breakDuration / 60}</span>
-          <button>+</button>
+          <button
+            onClick={() =>
+              dispatchDuration({ type: "INCREMENT", payload: "break" })
+            }
+          >
+            +
+          </button>
         </div>
       </div>
       <h1>
@@ -86,7 +159,7 @@ function Pomodoro() {
         <button onClick={playPause}>
           <img src={isRunning ? pauseIcon : playIcon} alt="Play/Pause button" />
         </button>
-        <button>
+        <button onClick={handleReset}>
           <img src={resestIcon} alt="Reset button" />
         </button>
       </div>

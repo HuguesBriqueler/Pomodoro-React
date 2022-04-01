@@ -13,15 +13,15 @@
   padding: 70px 0 0;
 }
 
-.anim-glow {
+.animGlow {
   animation: glow 1s infinite alternate;
 }
 @keyframes glow {
   from {
-    box-shadow: 0 0 10px 0px #f4b0ae;
+    box-shadow: 0 0 10px 0px #c2c262;
   }
   to {
-    box-shadow: 0 0 20px 20px #7351cf;
+    box-shadow: 0 0 20px 20px #353fa0;
   }
 }
 
