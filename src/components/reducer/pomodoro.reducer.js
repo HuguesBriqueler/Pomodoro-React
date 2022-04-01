@@ -6,9 +6,11 @@ import { useReducer } from "react";
 const useTuneButton = ({
   sessionDuration,
   setSessionDuration,
+  sessionTimer,
   setSessionTimer,
   breakDuration,
   setBreakDuration,
+  breakTimer,
   setBreakTimer,
 }) => {
   const [duration, dispatchDuration] = useReducer(durationActions);
@@ -38,6 +40,17 @@ const useTuneButton = ({
             setBreakDuration((prevBreakDuration) => prevBreakDuration - 60);
             setBreakTimer((prevBreakTimer) => prevBreakTimer - 60);
           }
+        }
+        break;
+      // handling countdown timer
+      case "TICK":
+        if (sessionTimer > 0) {
+          setSessionTimer((prevSessionTimer) => prevSessionTimer - 1);
+        } else if (breakTimer > 0) {
+          setBreakTimer((prevBreakTimer) => prevBreakTimer - 1);
+        } else {
+          setSessionTimer(sessionDuration);
+          setBreakTimer(breakDuration);
         }
         break;
       default: {

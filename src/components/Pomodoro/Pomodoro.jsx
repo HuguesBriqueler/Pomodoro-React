@@ -15,9 +15,11 @@ function Pomodoro() {
   const [duration, dispatchDuration] = useTuneButton({
     sessionDuration,
     setSessionDuration,
+    sessionTimer,
     setSessionTimer,
     breakDuration,
     setBreakDuration,
+    breakTimer,
     setBreakTimer,
   });
 
@@ -32,29 +34,10 @@ function Pomodoro() {
     setBreakTimer(breakDuration);
   };
 
-  // Reducer handling countdown timer
-  const [countdown, dispatchCountdown] = useReducer(countdownActions);
-  function countdownActions(state, action) {
-    switch (action.type) {
-      case "TICK":
-        if (sessionTimer > 0) {
-          setSessionTimer((prevSessionTimer) => prevSessionTimer - 1);
-        } else if (breakTimer > 0) {
-          setBreakTimer((prevBreakTimer) => prevBreakTimer - 1);
-        } else {
-          setSessionTimer(sessionDuration);
-          setBreakTimer(breakDuration);
-        }
-        break;
-      default: {
-      }
-    }
-  }
-
   useEffect(() => {
     if (isRunning) {
       const interval = setInterval(() => {
-        dispatchCountdown({ type: "TICK" });
+        dispatchDuration({ type: "TICK" });
       }, 1000);
 
       return () => clearInterval(interval);
