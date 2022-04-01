@@ -6,7 +6,7 @@ import resestIcon from "../../Images/reset.svg";
 
 function Pomodoro() {
   const [sessionDuration, setSessionDuration] = useState(1500);
-  const [sessionTimer, setSessionTimer] = useState(10);
+  const [sessionTimer, setSessionTimer] = useState(1500);
   const [breakDuration, setBreakDuration] = useState(300);
   const [breakTimer, setBreakTimer] = useState(300);
   const [isRunning, setIsRunning] = useState(false);
@@ -18,9 +18,9 @@ function Pomodoro() {
   function reducer(state, action) {
     switch (action.type) {
       case "TICK":
-        if (sessionTimer >= 0) {
+        if (sessionTimer > 0) {
           setSessionTimer((prevSessionTimer) => prevSessionTimer - 1);
-        } else if (breakTimer >= 1) {
+        } else if (breakTimer > 0) {
           setBreakTimer((prevBreakTimer) => prevBreakTimer - 1);
         } else {
           setSessionTimer(sessionDuration);
@@ -56,7 +56,31 @@ function Pomodoro() {
         </div>
       </div>
       <h1>
-        <span>CHRONO</span>
+        {sessionTimer > 0 ? (
+          <span>
+            {`${
+              Math.trunc(sessionTimer / 60) < 10
+                ? `0${Math.trunc(sessionTimer / 60)}`
+                : `${Math.trunc(sessionTimer / 60)}`
+            } : ${
+              sessionTimer % 60 < 10
+                ? `0${sessionTimer % 60}`
+                : `${sessionTimer % 60}`
+            }`}
+          </span>
+        ) : (
+          <span>
+            {`${
+              Math.trunc(breakTimer / 60) < 10
+                ? `0${Math.trunc(breakTimer / 60)}`
+                : `${Math.trunc(breakTimer / 60)}`
+            } : ${
+              breakTimer % 60 < 10
+                ? `0${breakTimer % 60}`
+                : `${breakTimer % 60}`
+            }`}
+          </span>
+        )}
       </h1>
       <div className={styles.containerControllers}>
         <button onClick={playPause}>
